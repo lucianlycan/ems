@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #EEF1FF, #D2DAFF);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .top-bar {
+      background: #B1B2FF;
+      padding: 10px 20px;
+      width: 100%;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .logo-container img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .logo-container h2 {
+      color: #000000;
+      font-size: 22px;
+      margin: 0;
+      font-weight: bold;
+    }
+    .nav-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      background: #FFFFFF;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      padding: 10px 0;
+    }
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-menu li {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      color: #5f6368;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 20px 20px 0 0;
+      transition: background 0.3s ease, color 0.3s ease;
+      position: relative;
+    }
+    .nav-menu li i {
+      font-size: 18px;
+    }
+    .nav-menu li:hover {
+      background: #F1F3F4;
+    }
+    .nav-menu li.active {
+      color: #1A73E8;
+      font-weight: bold;
+      background: #FFFFFF;
+      box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.1);
+    }
+    .content-wrapper {
+      margin-top: 150px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .content {
+      padding: 30px;
+      text-align: center;
+      color: #333;
+      font-size: 20px;
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #E0E0E0;
+      font-size: 16px;
+    }
+    th {
+      background: #F8F9FA;
+      color: black;
+      font-size: 18px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #B1B2FF;
+    }
+    tr:nth-child(even) {
+      background: #F8F9FA;
+    }
+    tr:hover {
+      background: #E0E0E0;
+      transition: 0.3s ease-in-out;
+    }
+    .status-borrowed {
+      background-color: orange;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .status-returned {
+      background-color: green;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .status-overdue {
+      background-color: red;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .table-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      position: relative;
+      margin-bottom: 10px;
+    }
+    .table-title {
+      text-align: center;
+      font-size: 30px;
+      font-weight: bold;
+      flex-grow: 1;
+    }
+    #clearHistoryBtn {
+      position: absolute;
+      right: 0;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    #clearHistoryBtn:hover {
+      background-color: #cc0000;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 30px;
+      width: 400px;
+      max-width: 90%;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+    }
+    .modal-content h3 {
+      margin-top: 0;
+      font-size: 26px;
+      font-weight: bold;
+      color: #333;
+    }
+    .modal-content p {
+      font-size: 20px;
+      margin: 20px 0;
+      color: #444;
+      line-height: 1.6;
+    }
+    .modal-content button {
+      padding: 12px 18px;
+      border: none;
+      background: #1a73e8;
+      color: white;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease-in-out;
+      width: 100%;
+      max-width: 200px;
+    }
+    .modal-content button:hover {
+      background: #1558c3;
+    }
+    .row-overdue {
+      background-color: rgba(255, 0, 0, 0.2) !important;
+    }
+    .row-borrowed {
+      background-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    .logout-btn:hover {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo">
+      <h2>Computer Engineering</h2>
+    </div>
+  </div>
+
+  <div class="nav-container">
+    <ul class="nav-menu">
+      <li id="home" onclick="navigateTo('dashboard.html')"><i class="fas fa-home"></i> Home</li>
+      <li id="equipment" onclick="navigateTo('equipment.html')"><i class="fas fa-tools"></i> Equipment</li>
+      <li id="history" onclick="navigateTo('history.html')"><i class="fas fa-history"></i> History</li>
+      <li id="user" onclick="navigateTo('user_info.html')"><i class="fas fa-user"></i> User</li>
+      <li id="about" onclick="navigateTo('about.html')"><i class="fas fa-info-circle"></i> About Us</li>
+      <li id="logout" onclick="confirmLogout()" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Log Out
+      </li>    
+    </ul>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="content">
+      <!-- Title at the top -->
+      <h2 class="table-title" style="margin-bottom: 20px; font-size: 28px;">BORROW & RETURN HISTORY</h2>
+    
+      <!-- Filter and Search Controls -->
+      <div class="table-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; width: 100%;">
+        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+          <div> 
+            <label for="statusFilter" style="font-weight: bold;">Status:</label><br>
+            <select id="statusFilter" onchange="applyFilters()" style="padding: 6px; border-radius: 5px; border: 1px solid #ccc;">
+              <option value="All">All</option>
+              <option value="Borrowed">Borrowed</option>
+              <option value="Returned">Returned</option>
+              <option value="Overdue">Overdue</option>
+            </select>
+          </div>
+          <div>
+            <label for="equipmentFilter" style="font-weight: bold;">Equipment:</label><br>
+            <select id="equipmentFilter" onchange="applyFilters()" style="padding: 6px; border-radius: 5px; border: 1px solid #ccc;">
+              <option value="All">All</option>
+            </select>
+          </div>
+        </div>
+    
+        <div style="margin-top: 10px; width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div style="position: relative; width: 100%; max-width: 300px;">
+            <i class="fas fa-search" style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); color: #888;"></i>
+            <input
+              type="text"
+              id="searchBar"
+              onkeyup="applyFilters()"
+              placeholder="Search by User ID, Name, Equipment, or Serial Number..."
+              style="width: 100%; padding: 10px 10px 10px 36px; font-size: 16px; border-radius: 30px; border: 1px solid #ccc;"
+            />
+          </div>
+    
+          <div style="min-width: 120px; margin-bottom: 30px;">
+            <button id="clearHistoryBtn" onclick="clearReturnedHistory()">Clear History</button>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Table Display -->
+      <table>
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Full Name</th>
+            <th>Equipment Name</th>
+            <th>Serial Number</th>
+            <th>Borrowed Date</th>
+            <th>Returned Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+        </tbody>
+      </table>
+    </div>    
+  </div>
+
+  <div id="overdueModal" class="modal">
+    <div class="modal-content">
+      <h3>⚠️ Equipment Alert</h3>
+      <p id="overdueText"></p>
+      <button onclick="closeOverdueModal()">OK</button>
+    </div>
+  </div>
+
+  <div id="confirmationModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <p id="confirmationMessage">Are you sure?</p>
+      <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+        <button id="confirmYes" style="background-color: #1A73E8; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Yes</button>
+        <button id="confirmNo" style="background-color: #D32F2F; color: white; padding: 10px 20px; border: none; border-radius: 5px;">No</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="successModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <p id="successMessage">Action completed successfully!</p>
+      <button onclick="closeSuccessModal()" style="margin-top: 15px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">OK</button>
+    </div>
+  </div>
+
+  <script>
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+
+    function setActiveTab() {
+      document.getElementById("history").classList.add("active");
+    }
+
+    function closeOverdueModal() {
+      document.getElementById("overdueModal").style.display = "none";
+    }
+    
+    function checkOverdue(dateBorrowedStr) {
+      const borrowedDate = new Date(dateBorrowedStr);
+      const now = new Date();
+      const diffHours = (now - borrowedDate) / (1000 * 60 * 60);
+      
+      if (diffHours >= 24) {
+        return true;
+      } else if (borrowedDate.toDateString() === now.toDateString() && now.getHours() >= 17) {
+        return true;
+      }
+      return false;
+    }
+
+    let allHistoryRecords = [];
+
+    function fetchHistory() {
+      fetch("get_history.php")
+        .then(response => response.json())
+        .then(data => {
+          allHistoryRecords = data.records || [];
+          populateEquipmentDropdown(allHistoryRecords);
+          renderHistory(allHistoryRecords);
+        })
+        .catch(error => {
+          console.error("Error fetching history:", error);
+        });
+    }
+
+    function populateEquipmentDropdown(records) {
+      const equipmentSet = new Set();
+      records.forEach(record => equipmentSet.add(record.equipment_name));
+      const dropdown = document.getElementById("equipmentFilter");
+      dropdown.innerHTML = `<option value="All">All</option>`;
+      equipmentSet.forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        dropdown.appendChild(option);
+      });
+    }
+
+    window.onload = function() {
+      setActiveTab();
+      fetchHistory();
+    };
+
+    function renderHistory(records) {
+      const tableBody = document.getElementById("historyTableBody");
+      tableBody.innerHTML = "";
+
+      let overdueCount = 0;
+
+      records.forEach(item => {
+        let statusClass = "";
+        let statusText = item.status;
+        let rowClass = "";
+
+        if (item.status === "Borrowed" && checkOverdue(item.date_borrowed)) {
+          statusClass = "status-overdue";
+          statusText = "Overdue";
+          rowClass = "row-overdue";
+          overdueCount++;
+        } else if (item.status === "Borrowed") {
+          statusClass = "status-borrowed";
+          rowClass = "row-borrowed";
+        } else if (item.status === "Returned") {
+          statusClass = "status-returned";
+        }
+
+        const row = `<tr class="${rowClass}">
+            <td>${item.user_id}</td>
+            <td>${item.user_fullname}</td>
+            <td>${item.equipment_name}</td>
+            <td>${item.equipment_serial}</td>
+            <td>${item.date_borrowed}</td>
+            <td>${item.date_returned ? item.date_returned : ""}</td>
+            <td><span class="${statusClass}">${statusText}</span></td>
+          </tr>`;
+        tableBody.innerHTML += row;
+      });
+
+      if (overdueCount > 0) {
+        document.getElementById("overdueText").innerText = ` ${overdueCount} equipment is/are overdue!`;
+        document.getElementById("overdueModal").style.display = "flex";
+      } else {
+        document.getElementById("overdueModal").style.display = "none";
+      }
+    }
+
+    function applyFilters() {
+      const statusFilter = document.getElementById("statusFilter").value;
+      const equipmentFilter = document.getElementById("equipmentFilter").value;
+      const searchQuery = document.getElementById("searchBar").value.toLowerCase();
+
+      const filtered = allHistoryRecords.filter(item => {
+        const isOverdue = item.status === "Borrowed" && checkOverdue(item.date_borrowed);
+        const statusMatch =
+          statusFilter === "All" ||
+          (statusFilter === "Overdue" && isOverdue) ||
+          (statusFilter === item.status && !isOverdue);
+
+        const equipmentMatch = equipmentFilter === "All" || item.equipment_name === equipmentFilter;
+
+        const searchMatch =
+          item.user_id.toLowerCase().includes(searchQuery) ||
+          item.user_fullname.toLowerCase().includes(searchQuery) ||
+          item.equipment_name.toLowerCase().includes(searchQuery) ||
+          item.equipment_serial.toLowerCase().includes(searchQuery);
+
+        return statusMatch && equipmentMatch && searchMatch;
+      });
+
+      renderHistory(filtered);
+    }
+
+    function clearReturnedHistory() {
+      showConfirmation("Are you sure you want to delete all returned equipment records?", function (confirmed) {
+        if (!confirmed) return;
+
+        fetch("clear_history.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        })
+          .then(response => response.json())
+          .then(data => {
+            showSuccess(data.message);
+            fetchHistory();
+          })
+          .catch(error => {
+            console.error("Error clearing history:", error);
+          });
+      });
+    }
+
+    function confirmLogout() {
+      showConfirmation("Are you sure you want to log out?", function (confirmed) {
+        if (confirmed) {
+          navigateTo('login.html');
+        }
+      });
+    }
+
+    function showConfirmation(message, callback) {
+      const modal = document.getElementById("confirmationModal");
+      const messageBox = document.getElementById("confirmationMessage");
+      const yesBtn = document.getElementById("confirmYes");
+      const noBtn = document.getElementById("confirmNo");
+
+      messageBox.textContent = message;
+      modal.style.display = "flex";
+
+      const cleanup = () => {
+        modal.style.display = "none";
+        yesBtn.onclick = null;
+        noBtn.onclick = null;
+      };
+
+      yesBtn.onclick = () => {
+        cleanup();
+        callback(true);
+      };
+
+      noBtn.onclick = () => {
+        cleanup();
+        callback(false);
+      };
+    }
+
+    function showSuccess(message) {
+      document.getElementById("successMessage").textContent = message;
+      document.getElementById("successModal").style.display = "flex";
+    }
+
+    function closeSuccessModal() {
+      document.getElementById("successModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>

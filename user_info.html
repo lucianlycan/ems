@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Information</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #EEF1FF, #D2DAFF);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .top-bar {
+      background: #B1B2FF;
+      padding: 10px 20px;
+      width: 100%;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .logo-container img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .logo-container h2 {
+      color: #000;
+      font-size: 22px;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .nav-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      background: #FFF;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      padding: 10px 0;
+    }
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-menu li {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      color: #5f6368;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 20px 20px 0 0;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .nav-menu li:hover {
+      background: #F1F3F4;
+    }
+    .nav-menu li.active {
+      color: #1A73E8;
+      font-weight: bold;
+      background: #FFF;
+      box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-wrapper {
+      margin-top: 150px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .content {
+      padding: 30px;
+      text-align: center;
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      font-size: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #E0E0E0;
+      font-size: 16px;
+    }
+    th {
+      background: #F8F9FA;
+      color: #000;
+      font-size: 18px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #B1B2FF;
+    }
+    tr:nth-child(even) {
+      background: #F8F9FA;
+    }
+    tr:hover {
+      background: #E0E0E0;
+      transition: 0.3s ease-in-out;
+    }
+
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 10px;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 22px;
+      padding: 5px 12px;
+      width: 250px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .search-container i {
+      font-size: 16px;
+      color: #5f6368;
+      margin-right: 8px;
+    }
+    .search-container input {
+      border: none;
+      outline: none;
+      font-size: 16px;
+      width: 100%;
+      background: transparent;
+    }
+
+    .add-button {
+      background: #1a73e8;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      margin: 0 5px;
+    }
+    .add-button:hover {
+      background: #1558c3;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .button-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      background: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 20%;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    .modal input {
+      width: 90%;
+      padding: 8px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .modal-buttons button {
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 5px;
+      font-size: 16px;
+    }
+    .save-button {
+      background: #1a73e8;
+      color: white;
+    }
+    .cancel-button {
+      background: red;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      margin: 0 5px;
+    }
+    .cancel-button:hover {
+      background: rgb(197, 3, 3);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .logout-btn:hover {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo"> 
+      <h2>Computer Engineering</h2>
+    </div>
+  </div>
+
+  <div class="nav-container">
+    <ul class="nav-menu">
+      <li onclick="navigateTo('dashboard.html')"><i class="fas fa-home"></i> Home</li>
+      <li onclick="navigateTo('equipment.html')"><i class="fas fa-tools"></i> Equipment</li>
+      <li onclick="navigateTo('history.html')"><i class="fas fa-history"></i> History</li>
+      <li class="active"><i class="fas fa-user"></i> User</li>
+      <li onclick="navigateTo('about.html')"><i class="fas fa-info-circle"></i> About Us</li>
+      <li id="logout" onclick="confirmLogout()" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Log Out
+      </li>    
+    </ul>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="content">
+      <h2>USER INFORMATION</h2>
+      <div class="table-controls">
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchBar" placeholder="Search Student ID or Name" onkeyup="searchUser()">
+        </div>
+        <div class="button-container">
+          <button class="add-button" onclick="openModal()">+ Add New User</button>
+          <button class="add-button" onclick="window.location.href='download_users.php'">Download Data</button>
+        </div>
+      </div>
+      
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Full Name</th>
+            <th>Year</th>
+            <th>Email</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal" id="userModal">
+    <div class="modal-content">
+      <h3 id="modalTitle">User Information</h3>
+      <input type="text" id="studentID" placeholder="Student ID">
+      <input type="text" id="fullName" placeholder="Full Name">
+      <input type="text" id="year" placeholder="Year">
+      <input type="email" id="email" placeholder="Email">
+      <div class="modal-buttons">
+        <button class="save-button" id="saveButton" onclick="saveUser()">Save</button>
+        <button class="cancel-button" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>  
+
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <p id="confirmationMessage">Are you sure?</p>
+      <div class="modal-buttons">
+        <button class="save-button" id="confirmYes">Yes</button>
+        <button class="cancel-button" onclick="closeConfirmationModal()">No</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <p id="successMessage">Action successful!</p>
+      <div class="modal-buttons">
+        <button class="save-button" onclick="closeSuccessModal()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+
+    function openModal() {
+      document.getElementById("userModal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("userModal").style.display = "none";
+
+      // Reset input fields
+      document.getElementById("studentID").value = "";
+      document.getElementById("fullName").value = "";
+      document.getElementById("year").value = "";
+      document.getElementById("email").value = "";
+
+      document.getElementById("studentID").disabled = false;
+      document.getElementById("saveButton").innerText = "Save";
+      editingUserId = null;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      fetchUsers();
+    });
+
+    
+    let editingUserId = null;
+
+    function fetchUsers() {
+      fetch("fetch_users.php")
+        .then((response) => response.json())
+        .then((data) => {
+          // Sort by year, then by full_name
+          data.sort((a, b) => {
+            if (a.year !== b.year) {
+              return a.year.localeCompare(b.year);
+            }
+            return a.full_name.localeCompare(b.full_name);
+          });
+
+          let tableBody = document.querySelector("#userTable tbody");
+          tableBody.innerHTML = ""; // Clear previous data
+
+          data.forEach((user) => {
+            let row = document.createElement("tr");
+
+            row.innerHTML = `
+              <td>${user.id_number}</td>
+              <td>${user.full_name}</td>
+              <td>${user.year}</td>
+              <td>${user.email}</td>
+              <td>
+                <button class="add-button" onclick="editUser('${user.id_number}', '${user.full_name}', '${user.year}', '${user.email}')">Edit</button>
+                <button class="cancel-button" onclick="deleteUser('${user.id_number}')">Delete</button>
+              </td>
+            `;
+
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => console.error("Error fetching users:", error));
+    }
+
+    function editUser(id_number, full_name, year, email) {
+      document.getElementById("studentID").value = id_number;
+      document.getElementById("fullName").value = full_name;
+      document.getElementById("year").value = year;
+      document.getElementById("email").value = email;
+
+      document.getElementById("studentID").disabled = true; // Prevent editing Student ID
+
+      editingUserId = id_number;
+      document.getElementById("saveButton").innerText = "Update";
+      document.getElementById("userModal").style.display = "block"; // Show modal
+    }
+
+    function deleteUser(id_number) {
+      showConfirmationModal("Are you sure you want to delete this user? This action cannot be undone.", () => {
+        let formData = new FormData();
+        formData.append("id_number", id_number);
+
+        fetch("delete_user.php", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            fetchUsers();
+            showSuccessModal(data.message);
+          } else {
+            showSuccessModal("Error: " + data.message);
+          }
+        })
+        .catch(error => console.error("Error deleting user:", error));
+      });
+    }
+
+    function saveUser() {
+      let id_number = document.getElementById("studentID").value.trim();
+      let full_name = document.getElementById("fullName").value.trim();
+      let year = document.getElementById("year").value.trim();
+      let email = document.getElementById("email").value.trim();
+
+      if (id_number === "" || full_name === "" || year === "" || email === "") {
+        showSuccessModal("All fields are required!");
+        return;
+      }
+
+      const isUpdate = editingUserId !== null;
+      const confirmationMessage = isUpdate
+        ? "Are you sure you want to update this user's information?"
+        : "Are you sure you want to save this new user?";
+
+      showConfirmationModal(confirmationMessage, () => {
+        let formData = new FormData();
+        formData.append("id_number", id_number);
+        formData.append("full_name", full_name);
+        formData.append("year", year);
+        formData.append("email", email);
+
+        let url = isUpdate ? "update_user.php" : "save_user.php";
+
+        fetch(url, {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            closeModal();
+            fetchUsers();
+            showSuccessModal(data.message);
+          } else {
+            showSuccessModal("Error: " + data.message);
+          }
+        })
+        .catch(error => console.error("Error saving user:", error));
+      });
+    }
+
+    function searchUser() {
+      const input = document.getElementById("searchBar").value.toLowerCase();
+      const rows = document.querySelectorAll("#userTable tbody tr");
+
+      rows.forEach((row) => {
+        const id = row.children[0].textContent.toLowerCase();   // Student ID
+        const name = row.children[1].textContent.toLowerCase(); // Full Name
+
+        if (id.includes(input) || name.includes(input)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+
+    let confirmationCallback = null;
+
+    function showConfirmationModal(message, callback) {
+      document.getElementById("confirmationMessage").textContent = message;
+      document.getElementById("confirmationModal").style.display = "block";
+      confirmationCallback = callback;
+    }
+
+    function closeConfirmationModal() {
+      document.getElementById("confirmationModal").style.display = "none";
+      confirmationCallback = null;
+    }
+
+    document.getElementById("confirmYes").addEventListener("click", function () {
+      if (confirmationCallback) confirmationCallback();
+      closeConfirmationModal();
+    });
+
+    function showSuccessModal(message) {
+      document.getElementById("successMessage").textContent = message;
+      document.getElementById("successModal").style.display = "block";
+    }
+
+    function closeSuccessModal() {
+      document.getElementById("successModal").style.display = "none";
+    }
+
+    function confirmLogout() {
+      showConfirmationModal("Are you sure you want to log out?", () => {
+        navigateTo('login.html');
+      });
+    }
+  </script>
+</body>
+</html>

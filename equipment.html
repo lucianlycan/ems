@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Equipment</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #eef1ff, #d2daff);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .top-bar {
+      background: #b1b2ff;
+      padding: 10px 20px;
+      width: 100%;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+    .logo-container img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .logo-container h2 {
+      color: #000000;
+      font-size: 22px;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .nav-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      background: #ffffff;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+      padding: 10px 0;
+    }
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-menu li {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      color: #5f6368;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 20px 20px 0 0;
+      transition: background 0.3s ease, color 0.3s ease;
+      position: relative;
+    }
+    .nav-menu li:hover {
+      background: #f1f3f4;
+    }
+    .nav-menu li.active {
+      color: #1a73e8;
+      font-weight: bold;
+      background: #ffffff;
+      box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-wrapper {
+      margin-top: 150px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .content {
+      padding: 30px;
+      text-align: center;
+      color: #333;
+      font-size: 20px;
+      width: 100%;
+      max-width: 1200px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid #ccc;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #E0E0E0;
+      font-size: 16px;
+    }
+    th {
+      background: #F8F9FA;
+      color: black;
+      font-size: 18px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #B1B2FF;
+    }
+    tr:nth-child(even) {
+      background: #F8F9FA;
+    }
+    tr:hover {
+      background: #E0E0E0;
+      transition: 0.3s ease-in-out;
+    }
+
+    .status-box {
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .status-available {
+      background-color: green;
+    }
+
+    .status-borrowed {
+      background-color: orange;
+    }
+
+    .status-condemn {
+      background-color: red;
+    }
+
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin-bottom: 10px;
+    }
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 22px;
+      padding: 5px 12px;
+      width: 250px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .search-container i {
+      font-size: 16px;
+      color: #5f6368;
+      margin-right: 8px;
+    }
+    .search-container input {
+      border: none;
+      outline: none;
+      font-size: 16px;
+      width: 100%;
+      background: transparent;
+    }
+
+    .add-button {
+      background: #1a73e8;
+      color: #ffffff;
+      border: none;
+      padding: 6px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      margin: 0 5px;
+    }
+    .add-button:hover {
+      background: #1558c3;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-btn {
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+      margin: 2px;
+    }
+
+    .action-btn:hover {
+      background: #1558c3;
+    }
+
+    .delete-btn {
+      background: red;
+    }
+
+    .delete-btn:hover {
+      background: darkred;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      margin: 10% auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 450px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      position: relative;
+      animation: scaleIn 0.3s ease-in-out;
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+    }
+
+    .modal-content label {
+      display: block;
+      text-align: left;
+      margin: 10px 0 5px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    .modal-content input,
+    .modal-content select {
+      width: 97%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      transition: border 0.3s ease;
+    }
+
+    .modal-content input:focus,
+    .modal-content select:focus {
+      border-color: #1a73e8;
+      outline: none;
+    }
+
+    .modal-content button {
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .modal-content button:hover {
+      background: #1558c3;
+    }
+
+    .close-button {
+      color: #555;
+      font-size: 24px;
+      font-weight: bold;
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .close-button:hover {
+      color: #000;
+    }
+
+    .logout-btn:hover {
+      color: red;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      width: 800px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s;
+    }
+
+    #confirmYes {
+      background-color: #1A73E8;
+      color: white;
+    }
+
+    #confirmNo {
+      background-color: #D32F2F;
+      color: white;
+    }
+
+    #confirmYes:hover {
+      background-color: #1666C1;
+    }
+
+    #confirmNo:hover {
+      background-color: #B71C1C;
+    }
+
+    #successModal button {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #successModal button:hover {
+      background-color: #45a049;
+    }
+
+    .equipment-details-modal {
+      display: inline-block;
+      text-align: left;
+      padding: 25px;
+      border-radius: 15px;
+      background: #ffffff;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      max-width: 90vw;
+    }
+
+    #equipmentDetailsModal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      text-align: center;
+    }
+
+    #equipmentDetailsModal table {
+      margin: 20px auto 0;
+      border-collapse: collapse;
+      width: auto;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    #equipmentDetailsModal th, #equipmentDetailsModal td {
+      padding: 12px 16px;
+      font-size: 15px;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    #equipmentDetailsModal td .action-btn,
+    #equipmentDetailsModal td .delete-btn {
+      margin: 2px 0;
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+
+    #equipmentDetailsModal .download-btns {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo" />
+      <h2>Computer Engineering</h2>
+    </div>
+  </div>
+
+  <div class="nav-container">
+    <ul class="nav-menu">
+      <li id="home" onclick="navigateTo('dashboard.html')"><i class="fas fa-home"></i> Home</li>
+      <li id="equipment" onclick="navigateTo('equipment.html')"><i class="fas fa-tools"></i> Equipment</li>
+      <li id="history" onclick="navigateTo('history.html')"><i class="fas fa-history"></i> History</li>
+      <li id="user" onclick="navigateTo('user_info.html')"><i class="fas fa-user"></i> User</li>
+      <li id="about" onclick="navigateTo('about.html')"><i class="fas fa-info-circle"></i> About Us</li>
+      <li id="logout" onclick="confirmLogout()" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Log Out
+      </li>    
+    </ul>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="content">
+      <h2>EQUIPMENT</h2>
+      <div class="table-controls">
+        <div class="search-container">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchBar" placeholder="Search Equipment Name..." onkeyup="searchEquipment()" />
+        </div>
+        <div>
+          <button class="add-button" onclick="openModal()">+ Add New Equipment</button>
+          <button class="add-button" id="downloadAllBtn" onclick="downloadAllQRCodes()">Download All QR Codes</button>
+          <button class="add-button" onclick="window.location.href='export_equipment.php'">Download All Data</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Equipment Name</th>
+            <th>Total Number</th>
+            <th>Available</th>
+            <th>Borrowed</th>
+          </tr>
+        </thead>               
+        <tbody id="equipmentTableBody"></tbody>
+      </table>      
+    </div>
+  </div>
+
+  <div class="modal" id="addEquipmentModal">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal()">&times;</span>
+      <h3>Add New Equipment</h3>
+      <label for="equipmentName">Equipment Name:</label>
+      <input type="text" id="equipmentName" placeholder="Enter Equipment Name" required autocomplete="off">
+      
+      <label for="brand">Brand:</label>
+      <input type="text" id="brand" placeholder="Enter Brand" required autocomplete="off">
+      
+      <label for="yearPurchased">Year Purchased:</label>
+      <input type="text" id="yearPurchased" placeholder="Enter Year" inputmode="numeric" pattern="\d*" maxlength="4" required autocomplete="off">
+      
+      <label for="propertyNumber">Property Number:</label>
+      <input type="text" id="propertyNumber" placeholder="Enter Property Number" required autocomplete="off">
+      
+      <label for="modelNumber">Model Number:</label>
+      <input type="text" id="modelNumber" placeholder="Enter Model Number" required autocomplete="off">
+      
+      <label for="acquiredDate">Date Acquired:</label>
+      <input type="date" id="acquiredDate" required autocomplete="off">
+      
+      <label for="acquiredCost">Acquisition Cost:</label>
+      <input type="text" id="acquiredCost" placeholder="Enter Acquired Cost" inputmode="numeric" pattern="\d*\.?\d*" required autocomplete="off">
+      
+      <label for="personAccountable">Person Accountable:</label>
+      <input type="text" id="personAccountable" placeholder="Enter Person Accountable" required autocomplete="off">
+      
+      <label for="location">Location:</label>
+      <input type="text" id="location" placeholder="Enter Location" required autocomplete="off">
+      
+      <button onclick="addEquipment()">Add Equipment</button>
+    </div>
+  </div>
+  
+  <div class="modal" id="equipmentDetailsModal">
+    <div class="modal-content equipment-details-modal">
+      <span class="close-button" onclick="closeDetailsModal()">&times;</span>
+      <h3 id="modalTitle">Equipment Details</h3>
+      <div class="download-btns">
+        <button class="add-button" onclick="downloadEquipmentDetails()">Download Details</button>
+        <button class="add-button" onclick="downloadEquipmentQRCodes()">Download QR Codes</button>
+      </div>
+      <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>Serial Number</th>
+            <th>Status</th>
+            <th>QR Code</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="modalTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <div class="modal" id="viewDetailsModal">
+    <div class="modal-content" style="max-width: 600px;">
+      <span class="close-button" onclick="closeViewDetailsModal()">&times;</span>
+      <h3 style="text-align:center;">Full Equipment Details</h3>
+      <div id="viewDetailsContent" style="font-size: 16px; line-height: 1.6;"></div>
+    </div>
+  </div>  
+
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <p id="confirmationMessage">Are you sure?</p>
+      <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
+        <button id="confirmYes" style="background-color: #1A73E8; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Yes</button>
+        <button id="confirmNo" style="background-color: #D32F2F; color: white; padding: 10px 20px; border: none; border-radius: 5px;">No</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <p id="successMessage">Action completed successfully!</p>
+      <button onclick="closeSuccessModal()" style="margin-top: 15px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px;">OK</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <script>
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+
+    window.onload = function () {
+      document.getElementById("equipment").classList.add("active");
+      loadEquipment();
+    };
+
+    function openModal() {
+      document.getElementById("addEquipmentModal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("addEquipmentModal").style.display = "none";
+    }
+
+    function generateSerialNumber(equipmentName) {
+      const prefix = equipmentName.trim().substring(0, 3).toUpperCase();
+      const random = Math.floor(1000 + Math.random() * 9000);
+      return `${prefix}-${random}`;
+    }
+
+    function addEquipment() {
+      const equipmentName = document.getElementById("equipmentName").value.trim();
+      const brand = document.getElementById("brand").value.trim();
+      const yearPurchased = document.getElementById("yearPurchased").value.trim();
+      const propertyNumber = document.getElementById("propertyNumber").value.trim();
+      const modelNumber = document.getElementById("modelNumber").value.trim();
+      const acquiredDate = document.getElementById("acquiredDate").value.trim();
+      const acquiredCost = document.getElementById("acquiredCost").value.trim();
+      const personAccountable = document.getElementById("personAccountable").value.trim();
+      const location = document.getElementById("location").value.trim();
+
+      if (
+        !equipmentName || !brand || !yearPurchased || !propertyNumber || 
+        !modelNumber || !acquiredDate || !acquiredCost || 
+        !personAccountable || !location
+      ) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const serialNumber = generateSerialNumber(equipmentName);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "add_equipment.php", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          showSuccess("✅ Equipment added successfully!");
+          closeModal();
+          loadEquipment();
+        } else {
+          showSuccess("❌ Error adding equipment.");
+        }
+      };
+      xhr.send(
+        "serialNumber=" + encodeURIComponent(serialNumber) +
+        "&equipmentName=" + encodeURIComponent(equipmentName) +
+        "&brand=" + encodeURIComponent(brand) +
+        "&yearPurchased=" + encodeURIComponent(yearPurchased) +
+        "&propertyNumber=" + encodeURIComponent(propertyNumber) +
+        "&modelNumber=" + encodeURIComponent(modelNumber) +
+        "&acquiredDate=" + encodeURIComponent(acquiredDate) +
+        "&acquiredCost=" + encodeURIComponent(acquiredCost) +
+        "&personAccountable=" + encodeURIComponent(personAccountable) +
+        "&location=" + encodeURIComponent(location)
+      );
+    }
+
+    let allEquipmentData = [];
+
+    function loadEquipment() {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "fetch_equipment.php", true);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          allEquipmentData = JSON.parse(xhr.responseText);
+          const tableBody = document.getElementById("equipmentTableBody");
+          tableBody.innerHTML = "";
+
+          const equipmentStats = {};
+
+          allEquipmentData.forEach(item => {
+            const name = item.equipmentName;
+            if (!equipmentStats[name]) {
+              equipmentStats[name] = {
+                total: 0,
+                available: 0,
+                borrowed: 0
+              };
+            }
+
+            equipmentStats[name].total++;
+            if (item.status === "available") {
+              equipmentStats[name].available++;
+            }
+          });
+
+          for (const name in equipmentStats) {
+            equipmentStats[name].borrowed = equipmentStats[name].total - equipmentStats[name].available;
+          }
+
+          const sortedNames = Object.keys(equipmentStats).sort((a, b) => a.localeCompare(b));
+
+          sortedNames.forEach(name => {
+            const stats = equipmentStats[name];
+            const row = document.createElement("tr");
+            row.style.cursor = "pointer";
+            row.onclick = function () {
+              showDetailsModal(name);
+            };
+            row.innerHTML = `
+              <td>${name}</td>
+              <td>${stats.total}</td>
+              <td>${stats.available}</td>
+              <td>${stats.borrowed}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+        }
+      };
+      xhr.send();
+    }
+
+    function searchEquipment() {
+      const query = document.getElementById("searchBar").value.toLowerCase();
+      const rows = document.querySelectorAll("#equipmentTableBody tr");
+
+      rows.forEach(row => {
+        const equipmentName = row.cells[0].textContent.toLowerCase();
+        if (equipmentName.includes(query)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+
+    function showDetailsModal(equipmentName) {
+      const modalTitle = document.getElementById("modalTitle");
+      const modalBody = document.getElementById("modalTableBody");
+      modalTitle.textContent = `Details for: ${equipmentName}`;
+      modalBody.innerHTML = "";
+
+      const filtered = allEquipmentData.filter(item => item.equipmentName === equipmentName);
+
+      filtered.forEach(item => {
+        const row = document.createElement("tr");
+
+        const qrTd = document.createElement("td");
+
+        const qrDiv = document.createElement("div");
+        qrDiv.style.display = "none";
+        qrDiv.id = "qr-" + item.serialNumber;
+        document.body.appendChild(qrDiv);
+
+        new QRCode(qrDiv, {
+          text: item.serialNumber,
+          width: 128,
+          height: 128
+        });
+
+        setTimeout(() => {
+          const qrCanvas = qrDiv.querySelector("canvas");
+          const downloadBtn = document.createElement("button");
+          downloadBtn.className = "action-btn";
+          downloadBtn.innerText = "Download QR";
+          downloadBtn.style.width = "auto";
+          downloadBtn.style.marginLeft = "20%";
+          downloadBtn.style.padding = "4px 6px";
+          downloadBtn.style.fontSize = "20px";
+          downloadBtn.style.whiteSpace = "nowrap";
+
+          downloadBtn.onclick = function () {
+            const link = document.createElement("a");
+            link.href = qrCanvas.toDataURL("image/png");
+            link.download = `${item.serialNumber}.png`;
+            link.click();
+          };
+
+          qrTd.appendChild(downloadBtn);
+        }, 500);
+
+        row.innerHTML = `
+          <td>${item.serialNumber}</td>
+          <td>
+            <span class="status-box ${item.status === 'available' ? 'status-available' : item.status === 'borrowed' ? 'status-borrowed' : 'status-condemn'}">
+              ${item.status}
+            </span>
+          </td>
+        `;
+        row.appendChild(qrTd);
+
+        const actionTd = document.createElement("td");
+        actionTd.innerHTML = `
+          <button class="action-btn" onclick='viewDetails(${JSON.stringify(item)})'>Details</button>
+          <button class="delete-btn" onclick="deleteEquipment('${item.serialNumber}')">Delete</button>
+        `;
+        row.appendChild(actionTd);
+
+        modalBody.appendChild(row);
+      });
+
+      document.getElementById("equipmentDetailsModal").style.display = "block";
+    }
+
+    function closeDetailsModal() {
+      document.getElementById("equipmentDetailsModal").style.display = "none";
+    }
+
+    function editEquipment() {
+      alert("Edit function coming soon!");
+    }
+
+    function deleteEquipment(serialNumber) {
+      showConfirmation(`Are you sure you want to delete serial number ${serialNumber}?`, function(confirmed) {
+        if (!confirmed) return;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "delete_equipment.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onload = function () {
+          if (xhr.status === 200 && xhr.responseText.includes("Deleted")) {
+            showSuccess("✅ Equipment deleted successfully!");
+            loadEquipment();
+            closeDetailsModal();
+          } else {
+            showSuccess("❌ Error deleting equipment: " + xhr.responseText);
+          }
+        };
+        xhr.send("serialNumber=" + encodeURIComponent(serialNumber));
+      });
+    }
+
+    function viewDetails(item) {
+      const detailsHTML = `
+        <div id="detailsDisplay">
+          <p><strong>Equipment Name:</strong> <span>${item.equipmentName}</span></p>
+          <p><strong>Serial Number:</strong> <span>${item.serialNumber}</span></p>
+          <p><strong>Status:</strong> <span>${item.status}</span></p>
+          <p><strong>Brand:</strong> <span>${item.brand}</span></p>
+          <p><strong>Year Purchased:</strong> <span>${item.yearPurchased}</span></p>
+          <p><strong>Property Number:</strong> <span>${item.propertyNumber}</span></p>
+          <p><strong>Model Number:</strong> <span>${item.modelNumber}</span></p>
+          <p><strong>Acquired Date:</strong> <span>${item.acquiredDate}</span></p>
+          <p><strong>Acquired Cost:</strong> <span>${item.acquiredCost}</span></p>
+          <p><strong>Person Accountable:</strong> <span>${item.personAccountable}</span></p>
+          <p><strong>Location:</strong> <span>${item.location}</span></p>
+          <button class="action-btn" onclick='enableEdit(${JSON.stringify(item)})'>Edit</button>
+        </div>
+        <form id="editForm" style="display:none; margin-top: 20px;">
+          <input type="hidden" name="serialNumber" value="${item.serialNumber}">
+          <p><strong>Equipment Name:</strong> <input type="text" name="equipmentName" value="${item.equipmentName}" /></p>
+          <p><strong>Status:</strong> 
+            <select name="status">
+              <option value="available" ${item.status === 'available' ? 'selected' : ''}>Available</option>
+              <option value="borrowed" ${item.status === 'borrowed' ? 'selected' : ''}>Borrowed</option>
+              <option value="condemn" ${item.status === 'condemn' ? 'selected' : ''}>Condemn</option>
+            </select>
+          </p>
+          <p><strong>Brand:</strong> <input type="text" name="brand" value="${item.brand}" /></p>
+          <p><strong>Year Purchased:</strong> <input type="text" name="yearPurchased" value="${item.yearPurchased}" /></p>
+          <p><strong>Property Number:</strong> <input type="text" name="propertyNumber" value="${item.propertyNumber}" /></p>
+          <p><strong>Model Number:</strong> <input type="text" name="modelNumber" value="${item.modelNumber}" /></p>
+          <p><strong>Acquired Date:</strong> <input type="date" name="acquiredDate" value="${item.acquiredDate}" /></p>
+          <p><strong>Acquired Cost:</strong> <input type="text" name="acquiredCost" value="${item.acquiredCost}" /></p>
+          <p><strong>Person Accountable:</strong> <input type="text" name="personAccountable" value="${item.personAccountable}" /></p>
+          <p><strong>Location:</strong> <input type="text" name="location" value="${item.location}" /></p>
+          <button type="button" class="action-btn" onclick="submitEditForm()">Save Changes</button>
+        </form>
+      `;
+      document.getElementById("viewDetailsContent").innerHTML = detailsHTML;
+      document.getElementById("viewDetailsModal").style.display = "block";
+    }
+
+    function enableEdit(item) {
+      document.getElementById("detailsDisplay").style.display = "none";
+      document.getElementById("editForm").style.display = "block";
+    }
+
+    function closeViewDetailsModal() {
+      document.getElementById("viewDetailsModal").style.display = "none";
+    }
+
+    function submitEditForm() {
+      const form = document.getElementById("editForm");
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "update_equipment.php", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onload = function () {
+        if (xhr.status === 200 && xhr.responseText.includes("Updated")) {
+          showSuccess("✅ Equipment updated successfully!");
+          document.getElementById("viewDetailsModal").style.display = "none";
+          loadEquipment();
+        } else {
+          showSuccess("❌ Error updating equipment: " + xhr.responseText);
+        }
+      };
+      xhr.send(JSON.stringify(data));
+    }
+
+    function downloadAllQRCodes() {
+      if (allEquipmentData.length === 0) {
+        showSuccess("⚠️ No equipment data available.");
+        return;
+      }
+
+      const zip = new JSZip();
+      const qrFolder = zip.folder("qrcodes");
+      let completed = 0;
+
+      allEquipmentData.forEach((item, index) => {
+        const tempDiv = document.createElement("div");
+        tempDiv.style.display = "none";
+        document.body.appendChild(tempDiv);
+
+        const qrCode = new QRCode(tempDiv, {
+          text: item.serialNumber,
+          width: 256,
+          height: 256
+        });
+
+        setTimeout(() => {
+          const canvas = tempDiv.querySelector("canvas");
+          if (canvas) {
+            canvas.toBlob(function(blob) {
+              qrFolder.file(`${item.serialNumber}.png`, blob);
+              completed++;
+
+              document.body.removeChild(tempDiv);
+
+              if (completed === allEquipmentData.length) {
+                zip.generateAsync({ type: "blob" }).then(function(content) {
+                  saveAs(content, "Equipment_QR_Codes.zip");
+                });
+              }
+            });
+          }
+        }, 200);
+      });
+    }
+
+    function downloadEquipmentDetails() {
+      const equipmentName = document.getElementById("modalTitle").textContent.replace("Details for: ", "").trim();
+      window.location.href = "export_equipment_details.php?equipmentName=" + encodeURIComponent(equipmentName);
+    }
+
+    function downloadEquipmentQRCodes() {
+      const equipmentName = document.getElementById("modalTitle").textContent.replace("Details for: ", "").trim();
+      const filteredItems = allEquipmentData.filter(item => item.equipmentName === equipmentName);
+
+      if (filteredItems.length === 0) {
+        showSuccess("⚠️ No equipment found.");
+        return;
+      }
+
+      const zip = new JSZip();
+      const qrFolder = zip.folder("qrcodes");
+      let completed = 0;
+
+      filteredItems.forEach(item => {
+        const tempDiv = document.createElement("div");
+        tempDiv.style.display = "none";
+        document.body.appendChild(tempDiv);
+
+        new QRCode(tempDiv, {
+          text: item.serialNumber,
+          width: 256,
+          height: 256
+        });
+
+        setTimeout(() => {
+          const canvas = tempDiv.querySelector("canvas");
+          if (canvas) {
+            canvas.toBlob(blob => {
+              qrFolder.file(`${item.serialNumber}.png`, blob);
+              completed++;
+              document.body.removeChild(tempDiv);
+
+              if (completed === filteredItems.length) {
+                zip.generateAsync({ type: "blob" }).then(content => {
+                  saveAs(content, `${equipmentName.replace(/\s+/g, "_")}_QRCodes.zip`);
+                });
+              }
+            });
+          }
+        }, 200);
+      });
+    }
+
+    function confirmLogout() {
+      showConfirmation("Are you sure you want to log out?", function(confirmed) {
+        if (confirmed) {
+          navigateTo('login.html');
+        }
+      });
+    }
+
+    const uppercaseFields = [
+    "equipmentName",
+    "brand",
+    "propertyNumber",
+    "modelNumber",
+    "personAccountable",
+    "location"
+  ];
+
+  uppercaseFields.forEach(id => {
+    const input = document.getElementById(id);
+    input.addEventListener("input", function () {
+      this.value = this.value.toUpperCase();
+    });
+  });
+
+  function showConfirmation(message, callback) {
+      const modal = document.getElementById("confirmationModal");
+      const messageBox = document.getElementById("confirmationMessage");
+      const yesBtn = document.getElementById("confirmYes");
+      const noBtn = document.getElementById("confirmNo");
+
+      messageBox.textContent = message;
+      modal.style.display = "flex";
+
+      const cleanup = () => {
+        modal.style.display = "none";
+        yesBtn.onclick = null;
+        noBtn.onclick = null;
+      };
+
+      yesBtn.onclick = () => {
+        cleanup();
+        callback(true);
+      };
+
+      noBtn.onclick = () => {
+        cleanup();
+        callback(false);
+      };
+    }
+
+    function showSuccess(message) {
+      document.getElementById("successMessage").textContent = message;
+      document.getElementById("successModal").style.display = "flex";
+    }
+
+    function closeSuccessModal() {
+      document.getElementById("successModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
